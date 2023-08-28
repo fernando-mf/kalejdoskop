@@ -1,0 +1,6 @@
+.item {
+  display: grid;
+  grid-template-columns: 64px auto 60px 80px;
+  align-items: center;
+  @apply gap-5;
+}
