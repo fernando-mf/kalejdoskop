@@ -1,16 +1,16 @@
 import { component$, useVisibleTask$ } from "@builder.io/qwik";
-import type { Playlist as SpotifyPlaylist } from "@/lib/spotify";
-import { formatDurationMMSS } from "@/utils/format";
+import type { PlaylistWithFeatures } from "@/lib/spotify";
+import { formatDurationMMSS, formatMusicalKey } from "@/utils/format";
 
 import styles from "./playlist.module.scss";
 
 type Props = {
-  playlist: SpotifyPlaylist;
+  playlist: PlaylistWithFeatures;
 };
 
 export const Playlist = component$<Props>(({ playlist }) => {
   useVisibleTask$(() => {
-    console.log(playlist.tracks.items[16]);
+    console.log(playlist.tracks);
   });
 
   return (
@@ -31,9 +31,11 @@ export const Playlist = component$<Props>(({ playlist }) => {
           <div />
           <div>Song</div>
           <div>Duration</div>
-          <div>Popularity</div>
+          <div class="text-center">Key</div>
+          <div class="text-center">Camelot</div>
+          <div class="text-center">BPM</div>
         </li>
-        {playlist.tracks.items.map(({ track }, i) => (
+        {playlist.tracks.map(({ track, features }) => (
           <li key={track.id} class={styles.item}>
             <div>
               <img
@@ -47,7 +49,11 @@ export const Playlist = component$<Props>(({ playlist }) => {
             <div class="text-right">
               {formatDurationMMSS(track.duration_ms)}
             </div>
-            <div class="text-center">{track.popularity} / 100</div>
+            <div class="text-center">
+              {formatMusicalKey(features.musicalKey)}
+            </div>
+            <div class="text-center">{features.camelot}</div>
+            <div class="text-center">{Math.round(features.tempo)}</div>
           </li>
         ))}
       </ol>

@@ -6,8 +6,8 @@ import { Playlist } from "@/components/playlist";
 import { spotifyAPI } from "~/lib/spotify";
 
 export const useSpotifyPlaylist = routeLoader$(async (requestEvent) => {
-  const playlistId = requestEvent.params.playlistId ?? "";
-  return spotifyAPI(requestEvent).getPlaylist(playlistId);
+  const playlistId = requestEvent.params.playlistId;
+  return spotifyAPI(requestEvent).getPlaylistWithAudioFeatures(playlistId);
 });
 
 export default component$(() => {
