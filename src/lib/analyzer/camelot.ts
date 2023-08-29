@@ -10,10 +10,7 @@ export type CamelotKey = `${CamelotNumber}${CamelotLetter}`;
 
 const CAMELOT_REGEX = /^([1-9]|10|11|12)([AB])$/;
 
-const MUSICAL_KEY_CAMELOT_MAPPING: Record<
-  MusicalKeyMode,
-  Record<MusicalNote, CamelotKey>
-> = {
+const MUSICAL_KEY_CAMELOT_MAPPING: Record<MusicalKeyMode, Record<MusicalNote, CamelotKey>> = {
   [MusicalKeyMode.Major]: {
     B: "1B",
     "F#": "2B",
@@ -87,16 +84,8 @@ export function camelotKeyToMajor(camelot: Camelot): CamelotKey {
   return `${camelot.number}B`;
 }
 
-export function camelotKeyAdd(
-  camelot: Camelot,
-  n: number,
-  targetLetter?: CamelotLetter,
-): CamelotKey {
-  const num = containNumber(
-    camelot.number + n,
-    CAMELOT_MIN,
-    CAMELOT_MAX,
-  ) as CamelotNumber;
+export function camelotKeyAdd(camelot: Camelot, n: number, targetLetter?: CamelotLetter): CamelotKey {
+  const num = containNumber(camelot.number + n, CAMELOT_MIN, CAMELOT_MAX) as CamelotNumber;
   const letter = targetLetter ?? camelot.letter;
   return `${num}${letter}`;
 }

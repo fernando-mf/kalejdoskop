@@ -1,7 +1,4 @@
-export function indexByProp<T extends Record<string, any>>(
-  data: T[],
-  key: keyof T,
-) {
+export function indexByProp<T extends Record<string, any>>(data: T[], key: keyof T) {
   return data.reduce(
     (acc, item) => {
       return {

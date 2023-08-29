@@ -1,11 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { RequestEventLoader } from "@builder.io/qwik-city";
 
-import {
-  Playlist,
-  PlaylistWithFeatures,
-  TracksFeaturesResponse,
-} from "./types";
+import { Playlist, PlaylistWithFeatures, TracksFeaturesResponse } from "./types";
 import { indexByProp } from "@/utils/array";
 import { Camelot, musicalKeyFromPitchClass } from "~/lib/analyzer";
 
@@ -66,17 +62,13 @@ class SpotifyAPI {
         await this.authManager.refreshToken();
       }
 
-      req.headers[
-        "Authorization"
-      ] = `Bearer ${this.authManager.getAccessToken()}`;
+      req.headers["Authorization"] = `Bearer ${this.authManager.getAccessToken()}`;
       return req;
     });
   }
 
   async getPlaylist(playlistId: string) {
-    const { data } = await this.client.get<Playlist>(
-      `/playlists/${playlistId}`,
-    );
+    const { data } = await this.client.get<Playlist>(`/playlists/${playlistId}`);
     return data;
   }
 
@@ -85,20 +77,15 @@ class SpotifyAPI {
       throw new Error("Track ids must be less than 100"); // TODO: support more than 100 tracks
     }
 
-    const { data } = await this.client.get<TracksFeaturesResponse>(
-      `/audio-features`,
-      {
-        params: {
-          ids: trackIds.join(","),
-        },
+    const { data } = await this.client.get<TracksFeaturesResponse>(`/audio-features`, {
+      params: {
+        ids: trackIds.join(","),
       },
-    );
+    });
     return data;
   }
 
-  async getPlaylistWithAudioFeatures(
-    playlistId: string,
-  ): Promise<PlaylistWithFeatures> {
+  async getPlaylistWithAudioFeatures(playlistId: string): Promise<PlaylistWithFeatures> {
     const playlist = await this.getPlaylist(playlistId);
     const trackIds = playlist.tracks.items.map((item) => item.track.id);
     const tracksFeatures = await this.getTracksFeatures(trackIds);
@@ -108,10 +95,7 @@ class SpotifyAPI {
       ...playlist,
       tracks: playlist.tracks.items.map(({ track }) => {
         const features = indexedFeatures[track.id];
-        const musicalKey = musicalKeyFromPitchClass(
-          features.key,
-          features.mode,
-        );
+        const musicalKey = musicalKeyFromPitchClass(features.key, features.mode);
         const camelot = Camelot.FromMusicalKey(musicalKey).key;
 
         return {
