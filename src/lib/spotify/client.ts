@@ -89,28 +89,35 @@ class SpotifyAPI {
     const playlist = await this.getPlaylist(playlistId);
     const trackIds = playlist.tracks.items.map((item) => item.track.id);
     const tracksFeatures = await this.getTracksFeatures(trackIds);
+    tracksFeatures.audio_features = tracksFeatures.audio_features.filter(Boolean);
     const indexedFeatures = indexByProp(tracksFeatures.audio_features, "id");
 
     let cumulativeTimeMs = 0;
     return {
       ...playlist,
-      tracks: playlist.tracks.items.map(({ track }) => {
-        const features = indexedFeatures[track.id];
-        const musicalKey = musicalKeyFromPitchClass(features.key, features.mode);
-        const camelot = Camelot.FromMusicalKey(musicalKey).key;
+      tracks: playlist.tracks.items
+        .map(({ track }) => {
+          const features = indexedFeatures[track.id];
+          if (!features) {
+            return null;
+          }
 
-        cumulativeTimeMs += features.duration_ms;
+          const musicalKey = musicalKeyFromPitchClass(features.key, features.mode);
+          const camelot = Camelot.FromMusicalKey(musicalKey).key;
 
-        return {
-          track,
-          features: {
-            ...features,
-            musicalKey,
-            camelot,
-            cumulativeTimeMs,
-          },
-        };
-      }),
+          cumulativeTimeMs += features.duration_ms;
+
+          return {
+            track,
+            features: {
+              ...features,
+              musicalKey,
+              camelot,
+              cumulativeTimeMs,
+            },
+          };
+        })
+        .filter(Boolean) as PlaylistWithFeatures["tracks"],
     };
   }
 }
