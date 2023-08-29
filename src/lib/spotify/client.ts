@@ -91,6 +91,7 @@ class SpotifyAPI {
     const tracksFeatures = await this.getTracksFeatures(trackIds);
     const indexedFeatures = indexByProp(tracksFeatures.audio_features, "id");
 
+    let cumulativeTimeMs = 0;
     return {
       ...playlist,
       tracks: playlist.tracks.items.map(({ track }) => {
@@ -98,12 +99,15 @@ class SpotifyAPI {
         const musicalKey = musicalKeyFromPitchClass(features.key, features.mode);
         const camelot = Camelot.FromMusicalKey(musicalKey).key;
 
+        cumulativeTimeMs += features.duration_ms;
+
         return {
           track,
           features: {
             ...features,
             musicalKey,
             camelot,
+            cumulativeTimeMs,
           },
         };
       }),

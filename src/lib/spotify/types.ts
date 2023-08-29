@@ -55,6 +55,7 @@ export type PlaylistWithFeatures = Omit<Playlist, "tracks"> & {
     features: TrackFeatures & {
       camelot: CamelotKey;
       musicalKey: MusicalKey;
+      cumulativeTimeMs: number;
     };
   }[];
 };

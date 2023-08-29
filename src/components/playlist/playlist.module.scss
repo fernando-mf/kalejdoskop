@@ -2,5 +2,16 @@
   display: grid;
   grid-template-columns: 64px auto 60px 50px 50px 50px;
   align-items: center;
+  position: relative;
   @apply gap-5;
+
+  .transition {
+    position: absolute;
+    right: -80px;
+    bottom: 0;
+    transform: translateY(85%);
+    width: 80px;
+
+    @apply text-xl text-center;
+  }
 }

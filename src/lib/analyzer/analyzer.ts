@@ -1,10 +1,4 @@
-import {
-  CamelotKey,
-  Camelot,
-  camelotKeyToMajor,
-  camelotKeyToMinor,
-  camelotKeyAdd,
-} from "./camelot";
+import { CamelotKey, Camelot, camelotKeyToMajor, camelotKeyToMinor, camelotKeyAdd } from "./camelot";
 
 type EnergyIntensity = {
   low: CamelotKey[];
@@ -59,4 +53,54 @@ export function analyze(key: CamelotKey): AnalyzerResult {
     return processMinor(camelot);
   }
   return processMajor(camelot);
+}
+
+export enum CamelotTransition {
+  PerfectMatch,
+  MoodChange,
+  EnergyBoostLow,
+  EnergyBoostModerate,
+  EnergyBoostHigh,
+  EnergyDropLow,
+  EnergyDropModerate,
+  EnergyDropHigh,
+  Unknown,
+}
+
+export function calculateTransition(from: CamelotKey, to: CamelotKey): CamelotTransition {
+  const results = analyze(from);
+
+  // Perfect match
+  if (results.perfectMatch.includes(to)) {
+    return CamelotTransition.PerfectMatch;
+  }
+
+  // Mood change
+  if (results.moodChange === to) {
+    return CamelotTransition.MoodChange;
+  }
+
+  // Energy boost
+  if (results.energyBoost.low.includes(to)) {
+    return CamelotTransition.EnergyBoostLow;
+  }
+  if (results.energyBoost.moderate.includes(to)) {
+    return CamelotTransition.EnergyBoostModerate;
+  }
+  if (results.energyBoost.high.includes(to)) {
+    return CamelotTransition.EnergyBoostHigh;
+  }
+
+  // Energy drop
+  if (results.energyDrop.low.includes(to)) {
+    return CamelotTransition.EnergyDropLow;
+  }
+  if (results.energyDrop.moderate.includes(to)) {
+    return CamelotTransition.EnergyDropModerate;
+  }
+  if (results.energyDrop.high.includes(to)) {
+    return CamelotTransition.EnergyDropHigh;
+  }
+
+  return CamelotTransition.Unknown;
 }
